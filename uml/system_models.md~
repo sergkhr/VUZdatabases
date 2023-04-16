@@ -82,7 +82,59 @@
 	    (object Class "Мастер"
 		quid       	"642AC22C00A2"
 		documentation 	"Выполнение прецедентов иожет иметь любую последовательность (rational rose не позволяет сделать ассоциацию без стрелки)"
-		stereotype 	"Actor")
+		stereotype 	"Actor"
+		used_nodes 	(list uses_relationship_list
+		    (object Uses_Relationship
+			quid       	"6433FF2A00C0"
+			documentation 	"отправляет системе тот контекст, с которым она должна работать, при создании совета."
+			label      	"отправляет системе"
+			supplier   	"Logical View::Контекст"
+			quidu      	"6433F20F00A0"))
+		operations 	(list Operations
+		    (object Operation "запроситьСовет"
+			quid       	"6433F5AF01FB"
+			documentation 	"Заправшивает совет у системы"
+			parameters 	(list Parameters
+			    (object Parameter "контекст"
+				quid       	"6433F6230136"
+				type       	"Контекст"
+				quidu      	"6433F20F00A0"))
+			result     	"Совет"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0
+			quidu      	"6433FC7C0333")
+		    (object Operation "передатьКонтекст"
+			quid       	"643C0BD90321"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)))
+	    (object Class "Система"
+		quid       	"642ACC3E00FC"
+		stereotype 	"Business Actor"
+		used_nodes 	(list uses_relationship_list
+		    (object Uses_Relationship
+			quid       	"6433FF190148"
+			supplier   	"Logical View::Совет"
+			quidu      	"6433FC7C0333")
+		    (object Uses_Relationship
+			quid       	"6434034B02F2"
+			label      	"может использовать"
+			supplier   	"Logical View::ЧастьСессии"
+			quidu      	"6433F4B80368"))
+		operations 	(list Operations
+		    (object Operation "создатьСовет"
+			quid       	"6433FC8C0101"
+			result     	"Совет"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0
+			quidu      	"6433FC7C0333")
+		    (object Operation "отправитьСовет"
+			quid       	"643C098B005D"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)))
 	    (object UseCase "Подготовить Персонажей"
 		quid       	"642AC2470174"
 		visible_modules 	(list dependency_list
@@ -204,6 +256,75 @@
 			stereotype 	"extend"
 			supplier   	"Use Case View::Подготовить место действия"
 			quidu      	"642AC3990014")))
+	    (object UseCase "Запрос советов"
+		quid       	"642ACC6F0039"
+		visible_modules 	(list dependency_list
+		    (object Dependency_Relationship
+			quid       	"642ACCAA0261"
+			stereotype 	"include"
+			supplier   	"Use Case View::Отправка наработок"
+			quidu      	"642ACC93017B")))
+	    (object UseCase "Отправка наработок"
+		quid       	"642ACC93017B"
+		visible_modules 	(list dependency_list
+		    (object Dependency_Relationship
+			quid       	"642ACE09023B"
+			stereotype 	"include"
+			supplier   	"Use Case View::Получение наработок"
+			quidu      	"642ACDFE038B")
+		    (object Dependency_Relationship
+			quid       	"642ACEBD00EE"
+			documentation 	"В теории польлзователь может захотеть получить просто абстрактные совепты, не связанные с его наработками, или же вообще случайные советы."
+			stereotype 	"extend"
+			supplier   	"Use Case View::Запрос советов"
+			quidu      	"642ACC6F0039")))
+	    (object UseCase "Генерация советов"
+		quid       	"642ACCC60276"
+		visible_modules 	(list dependency_list
+		    (object Dependency_Relationship
+			quid       	"642ACD1F0382"
+			stereotype 	"include"
+			supplier   	"Use Case View::Отправка советов"
+			quidu      	"642ACD0C017A")))
+	    (object UseCase "Отправка советов"
+		quid       	"642ACD0C017A"
+		visible_modules 	(list dependency_list
+		    (object Dependency_Relationship
+			quid       	"642ACD6D0194"
+			stereotype 	"include"
+			supplier   	"Use Case View::Получение советов"
+			quidu      	"642ACD4202C9")))
+	    (object UseCase "Получение советов"
+		quid       	"642ACD4202C9"
+		visible_modules 	(list dependency_list
+		    (object Dependency_Relationship
+			quid       	"642ACDBA0323"
+			stereotype 	"extend"
+			supplier   	"Use Case View::Запрос советов"
+			quidu      	"642ACC6F0039")))
+	    (object UseCase "Получение наработок"
+		quid       	"642ACDFE038B"
+		visible_modules 	(list dependency_list
+		    (object Dependency_Relationship
+			quid       	"642ACE36007C"
+			stereotype 	"extend"
+			supplier   	"Use Case View::Генерация советов"
+			quidu      	"642ACCC60276")
+		    (object Dependency_Relationship
+			quid       	"642ACF16022B"
+			stereotype 	"extend"
+			supplier   	"Use Case View::Сохранение наработок"
+			quidu      	"642ACF0502C6")))
+	    (object UseCase "Запрос на сохранение"
+		quid       	"642ACE600382"
+		visible_modules 	(list dependency_list
+		    (object Dependency_Relationship
+			quid       	"642ACEA300B5"
+			stereotype 	"include"
+			supplier   	"Use Case View::Отправка наработок"
+			quidu      	"642ACC93017B")))
+	    (object UseCase "Сохранение наработок"
+		quid       	"642ACF0502C6")
 	    (object Association "$UNNAMED$0"
 		quid       	"642AC2DE0116"
 		roles      	(list role_list
@@ -240,6 +361,54 @@
 			quid       	"642AC5A20095"
 			supplier   	"Use Case View::Мастер"
 			quidu      	"642AC22C00A2")))
+	    (object Association "$UNNAMED$9"
+		quid       	"642ACC7F01A8"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$10"
+			quid       	"642ACC8002C2"
+			supplier   	"Use Case View::Запрос советов"
+			quidu      	"642ACC6F0039"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$11"
+			quid       	"642ACC8002C6"
+			supplier   	"Use Case View::Мастер"
+			quidu      	"642AC22C00A2")))
+	    (object Association "$UNNAMED$12"
+		quid       	"642ACCCF039D"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$13"
+			quid       	"642ACCD0028A"
+			supplier   	"Use Case View::Генерация советов"
+			quidu      	"642ACCC60276"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$14"
+			quid       	"642ACCD0028D"
+			supplier   	"Use Case View::Система"
+			quidu      	"642ACC3E00FC")))
+	    (object Association "$UNNAMED$15"
+		quid       	"642ACE6B03BC"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$16"
+			quid       	"642ACE6C032A"
+			supplier   	"Use Case View::Запрос на сохранение"
+			quidu      	"642ACE600382"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$17"
+			quid       	"642ACE6C032D"
+			supplier   	"Use Case View::Мастер"
+			quidu      	"642AC22C00A2")))
+	    (object Association "$UNNAMED$18"
+		quid       	"642ACF300190"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$19"
+			quid       	"642ACF31015D"
+			supplier   	"Use Case View::Сохранение наработок"
+			quidu      	"642ACF0502C6"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$20"
+			quid       	"642ACF310163"
+			supplier   	"Use Case View::Система"
+			quidu      	"642ACC3E00FC")))
 	    (object Class_Category "NewPackage"
 		quid       	"642AC13E0118"
 		exportControl 	"Public"
@@ -252,11 +421,11 @@
 		zoom       	100
 		max_height 	28350
 		max_width  	21600
-		origin_x   	0
-		origin_y   	272
+		origin_x   	-16
+		origin_y   	0
 		items      	(list diagram_item_list
-		    (object UseCaseView "Use Case View::Подготовить Персонажей" @1
-			location   	(1504, 832)
+		    (object UseCaseView "Use Case View::Добавить случайные детали" @1
+			location   	(2208, 2160)
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -269,20 +438,20 @@
 			    default_color 	TRUE)
 			label      	(object ItemLabel
 			    Parent_View 	@1
-			    location   	(1504, 1040)
+			    location   	(2208, 2333)
 			    anchor_loc 	1
 			    nlines     	2
 			    max_width  	630
 			    justify    	0
-			    label      	"Подготовить Персонажей")
+			    label      	"Добавить случайные детали")
 			icon_style 	"Icon"
 			line_color 	3342489
 			fill_color 	13434879
-			quidu      	"642AC2470174"
-			width      	481
-			height     	257)
-		    (object UseCaseView "Use Case View::Добавить случайные детали" @2
-			location   	(2128, 1792)
+			quidu      	"642AC48902AC"
+			width      	419
+			height     	187)
+		    (object UseCaseView "Use Case View::Добавить изменения в локациях" @2
+			location   	(2080, 2400)
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -295,20 +464,19 @@
 			    default_color 	TRUE)
 			label      	(object ItemLabel
 			    Parent_View 	@2
-			    location   	(2128, 1965)
+			    location   	(2080, 2538)
 			    anchor_loc 	1
 			    nlines     	2
 			    max_width  	630
 			    justify    	0
-			    label      	"Добавить случайные детали")
+			    label      	"Добавить изменения в локациях")
 			icon_style 	"Icon"
 			line_color 	3342489
 			fill_color 	13434879
-			quidu      	"642AC48902AC"
-			width      	419
-			height     	187)
-		    (object UseCaseView "Use Case View::Добавить изменения в локациях" @3
-			location   	(2112, 2208)
+			quidu      	"642AC5880111"
+			height     	118)
+		    (object UseCaseView "Use Case View::Придумать внешность" @3
+			location   	(2544, 1072)
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -321,19 +489,20 @@
 			    default_color 	TRUE)
 			label      	(object ItemLabel
 			    Parent_View 	@3
-			    location   	(2112, 2346)
+			    location   	(2544, 1261)
 			    anchor_loc 	1
 			    nlines     	2
 			    max_width  	630
 			    justify    	0
-			    label      	"Добавить изменения в локациях")
+			    label      	"Придумать внешность")
 			icon_style 	"Icon"
 			line_color 	3342489
 			fill_color 	13434879
-			quidu      	"642AC5880111"
-			height     	118)
-		    (object UseCaseView "Use Case View::Подготовить место действия" @4
-			location   	(1328, 1856)
+			quidu      	"642AC6580259"
+			width      	344
+			height     	219)
+		    (object UseCaseView "Use Case View::Выбрать звучание голоса" @4
+			location   	(2560, 1392)
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -346,23 +515,20 @@
 			    default_color 	TRUE)
 			label      	(object ItemLabel
 			    Parent_View 	@4
-			    location   	(1328, 2063)
+			    location   	(2560, 1565)
 			    anchor_loc 	1
 			    nlines     	2
 			    max_width  	630
 			    justify    	0
-			    label      	"Подготовить место действия")
+			    label      	"Выбрать звучание голоса")
 			icon_style 	"Icon"
 			line_color 	3342489
 			fill_color 	13434879
-			quidu      	"642AC3990014"
-			width      	419
-			height     	256)
-		    (object ClassView "Class" "Use Case View::Мастер" @5
-			ShowCompartmentStereotypes 	TRUE
-			IncludeAttribute 	TRUE
-			IncludeOperation 	TRUE
-			location   	(304, 1248)
+			quidu      	"642AC79000C3"
+			width      	350
+			height     	188)
+		    (object UseCaseView "Use Case View::Продумать возможные взаимодействия" @5
+			location   	(2304, 1712)
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -375,20 +541,20 @@
 			    default_color 	TRUE)
 			label      	(object ItemLabel
 			    Parent_View 	@5
-			    location   	(304, 1408)
+			    location   	(2304, 1919)
 			    anchor_loc 	1
 			    nlines     	2
-			    max_width  	325
+			    max_width  	630
 			    justify    	0
-			    label      	"Мастер")
-			icon       	"Actor"
+			    label      	"Продумать возможные взаимодействия")
 			icon_style 	"Icon"
 			line_color 	3342489
-			quidu      	"642AC22C00A2"
-			annotation 	8
-			autoResize 	TRUE)
-		    (object AssociationViewNew "$UNNAMED$0" @6
-			location   	(814, 1065)
+			fill_color 	13434879
+			quidu      	"642AC7EC0344"
+			width      	382
+			height     	256)
+		    (object UseCaseView "Use Case View::Получение чего-либо" @6
+			location   	(3040, 1488)
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -399,36 +565,21 @@
 			    strike     	FALSE
 			    color      	0
 			    default_color 	TRUE)
-			stereotype 	TRUE
+			label      	(object ItemLabel
+			    Parent_View 	@6
+			    location   	(3040, 1626)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	630
+			    justify    	0
+			    label      	"Получение чего-либо")
+			icon_style 	"Icon"
 			line_color 	3342489
-			quidu      	"642AC2DE0116"
-			roleview_list 	(list RoleViews
-			    (object RoleView "$UNNAMED$1" @7
-				Parent_View 	@6
-				location   	(446, 489)
-				stereotype 	TRUE
-				line_color 	3342489
-				quidu      	"642AC2DF0091"
-				client     	@6
-				supplier   	@1
-				vertices   	(list Points
-				    (814, 1065)
-				    (1267, 905))
-				line_style 	0)
-			    (object RoleView "$UNNAMED$2" @8
-				Parent_View 	@6
-				location   	(446, 489)
-				stereotype 	TRUE
-				line_color 	3342489
-				quidu      	"642AC2DF0093"
-				client     	@6
-				supplier   	@5
-				vertices   	(list Points
-				    (814, 1065)
-				    (361, 1225))
-				line_style 	0)))
-		    (object AssociationViewNew "$UNNAMED$3" @9
-			location   	(746, 1507)
+			fill_color 	13434879
+			quidu      	"642AC84C023B"
+			height     	118)
+		    (object UseCaseView "Use Case View::Зацепки для сюжета" @7
+			location   	(3040, 1696)
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -439,36 +590,76 @@
 			    strike     	FALSE
 			    color      	0
 			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@7
+			    location   	(3040, 1834)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	630
+			    justify    	0
+			    label      	"Зацепки для сюжета")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"642AC8670372"
+			height     	118)
+		    (object UseCaseView "Use Case View::Получение задания" @8
+			location   	(3040, 1888)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@8
+			    location   	(3040, 2026)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	630
+			    justify    	0
+			    label      	"Получение задания")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"642AC87701BE"
+			height     	118)
+		    (object InheritView "" @9
 			stereotype 	TRUE
 			line_color 	3342489
-			quidu      	"642AC59D0338"
-			roleview_list 	(list RoleViews
-			    (object RoleView "$UNNAMED$4" @10
-				Parent_View 	@9
-				location   	(362, 899)
-				stereotype 	TRUE
-				line_color 	3342489
-				quidu      	"642AC59E0348"
-				client     	@9
-				supplier   	@4
-				vertices   	(list Points
-				    (746, 1507)
-				    (1131, 1735))
-				line_style 	0)
-			    (object RoleView "$UNNAMED$5" @11
-				Parent_View 	@9
-				location   	(362, 899)
-				stereotype 	TRUE
-				line_color 	3342489
-				quidu      	"642AC59E034A"
-				client     	@9
-				supplier   	@5
-				vertices   	(list Points
-				    (746, 1507)
-				    (361, 1280))
-				line_style 	0)))
-		    (object UseCaseView "Use Case View::Подобрать музыку" @12
-			location   	(816, 2304)
+			quidu      	"642AC8810366"
+			client     	@8
+			supplier   	@5
+			vertices   	(list Points
+			    (2928, 1858)
+			    (2488, 1751))
+			line_style 	0)
+		    (object InheritView "" @10
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"642AC885017F"
+			client     	@7
+			supplier   	@5
+			vertices   	(list Points
+			    (2928, 1696)
+			    (2488, 1704))
+			line_style 	0)
+		    (object InheritView "" @11
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"642AC8880266"
+			client     	@6
+			supplier   	@5
+			vertices   	(list Points
+			    (2844, 1544)
+			    (2488, 1649))
+			line_style 	0)
+		    (object UseCaseView "Use Case View::Вражда" @12
+			location   	(2960, 2128)
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -481,20 +672,29 @@
 			    default_color 	TRUE)
 			label      	(object ItemLabel
 			    Parent_View 	@12
-			    location   	(816, 2493)
+			    location   	(2960, 2266)
 			    anchor_loc 	1
 			    nlines     	2
 			    max_width  	630
 			    justify    	0
-			    label      	"Подобрать музыку")
+			    label      	"Вражда")
 			icon_style 	"Icon"
 			line_color 	3342489
 			fill_color 	13434879
-			quidu      	"642AC47702D2"
-			width      	350
-			height     	219)
-		    (object AssociationViewNew "$UNNAMED$6" @13
-			location   	(569, 1798)
+			quidu      	"642AC8CB0047"
+			height     	118)
+		    (object InheritView "" @13
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"642AC8D3036F"
+			client     	@12
+			supplier   	@5
+			vertices   	(list Points
+			    (2869, 2069)
+			    (2523, 1848))
+			line_style 	0)
+		    (object UseCaseView "Use Case View::Сделать карту" @14
+			location   	(1616, 2656)
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -505,36 +705,46 @@
 			    strike     	FALSE
 			    color      	0
 			    default_color 	TRUE)
-			stereotype 	TRUE
+			label      	(object ItemLabel
+			    Parent_View 	@14
+			    location   	(1616, 2794)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	630
+			    justify    	0
+			    label      	"Сделать карту")
+			icon_style 	"Icon"
 			line_color 	3342489
-			quidu      	"642AC5A1010B"
-			roleview_list 	(list RoleViews
-			    (object RoleView "$UNNAMED$7" @14
-				Parent_View 	@13
-				location   	(185, 1190)
-				stereotype 	TRUE
-				line_color 	3342489
-				quidu      	"642AC5A20093"
-				client     	@13
-				supplier   	@12
-				vertices   	(list Points
-				    (569, 1798)
-				    (762, 2197))
-				line_style 	0)
-			    (object RoleView "$UNNAMED$8" @15
-				Parent_View 	@13
-				location   	(185, 1190)
-				stereotype 	TRUE
-				line_color 	3342489
-				quidu      	"642AC5A20095"
-				client     	@13
-				supplier   	@5
-				vertices   	(list Points
-				    (569, 1798)
-				    (376, 1399))
-				line_style 	0)))
-		    (object UseCaseView "Use Case View::Придумать внешность" @16
-			location   	(2480, 304)
+			fill_color 	13434879
+			quidu      	"642AC9E201DD"
+			height     	118)
+		    (object UseCaseView "Use Case View::Отправка наработок" @15
+			location   	(1296, 576)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@15
+			    location   	(1296, 714)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	630
+			    justify    	0
+			    label      	"Отправка наработок")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"642ACC93017B"
+			height     	118)
+		    (object UseCaseView "Use Case View::Отправка советов" @16
+			location   	(1952, 144)
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -547,19 +757,19 @@
 			    default_color 	TRUE)
 			label      	(object ItemLabel
 			    Parent_View 	@16
-			    location   	(2480, 493)
+			    location   	(1952, 282)
 			    anchor_loc 	1
 			    nlines     	2
 			    max_width  	630
 			    justify    	0
-			    label      	"Придумать внешность")
+			    label      	"Отправка советов")
 			icon_style 	"Icon"
 			line_color 	3342489
 			fill_color 	13434879
-			quidu      	"642AC6580259"
-			width      	344
-			height     	219)
-		    (object DependencyView "" @17
+			quidu      	"642ACD0C017A"
+			height     	118)
+		    (object UseCaseView "Use Case View::Получение советов" @17
+			location   	(1280, 160)
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -570,37 +780,20 @@
 			    strike     	FALSE
 			    color      	0
 			    default_color 	TRUE)
-			stereotype 	(object SegLabel @18
+			label      	(object ItemLabel
 			    Parent_View 	@17
-			    location   	(1748, 2172)
-			    font       	(object Font
-				size       	10
-				face       	"Arial"
-				charSet    	204
-				bold       	FALSE
-				italics    	FALSE
-				underline  	FALSE
-				strike     	FALSE
-				color      	0
-				default_color 	TRUE)
-			    anchor     	10
+			    location   	(1280, 298)
 			    anchor_loc 	1
-			    nlines     	1
-			    max_width  	450
+			    nlines     	2
+			    max_width  	630
 			    justify    	0
-			    label      	"<<extend>>"
-			    pctDist    	0.500000
-			    height     	120
-			    orientation 	0)
+			    label      	"Получение советов")
+			icon_style 	"Icon"
 			line_color 	3342489
-			quidu      	"642AC74600EF"
-			client     	@3
-			supplier   	@4
-			vertices   	(list Points
-			    (2002, 2156)
-			    (1592, 1969))
-			line_style 	0)
-		    (object DependencyView "" @19
+			fill_color 	13434879
+			quidu      	"642ACD4202C9"
+			height     	118)
+		    (object DependencyView "" @18
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -611,9 +804,9 @@
 			    strike     	FALSE
 			    color      	0
 			    default_color 	TRUE)
-			stereotype 	(object SegLabel @20
-			    Parent_View 	@19
-			    location   	(1736, 1939)
+			stereotype 	(object SegLabel @19
+			    Parent_View 	@18
+			    location   	(1633, 91)
 			    font       	(object Font
 				size       	10
 				face       	"Arial"
@@ -629,18 +822,43 @@
 			    nlines     	1
 			    max_width  	450
 			    justify    	0
-			    label      	"<<extend>>"
-			    pctDist    	0.500000
-			    height     	120
-			    orientation 	0)
+			    label      	"<<include>>"
+			    pctDist    	0.457255
+			    height     	58
+			    orientation 	1)
 			line_color 	3342489
-			quidu      	"642AC74F004F"
-			client     	@2
-			supplier   	@4
+			quidu      	"642ACD6D0194"
+			client     	@16
+			supplier   	@17
 			vertices   	(list Points
-			    (1923, 1804)
-			    (1530, 1834))
+			    (1842, 144)
+			    (1388, 155))
 			line_style 	0)
+		    (object UseCaseView "Use Case View::Получение наработок" @20
+			location   	(1904, 608)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@20
+			    location   	(1904, 746)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	630
+			    justify    	0
+			    label      	"Получение наработок")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"642ACDFE038B"
+			height     	118)
 		    (object DependencyView "" @21
 			font       	(object Font
 			    size       	10
@@ -654,7 +872,74 @@
 			    default_color 	TRUE)
 			stereotype 	(object SegLabel @22
 			    Parent_View 	@21
-			    location   	(1762, 1448)
+			    location   	(1568, 528)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    anchor     	10
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	450
+			    justify    	0
+			    label      	"<<include>>"
+			    pctDist    	0.416641
+			    height     	59
+			    orientation 	0)
+			line_color 	3342489
+			quidu      	"642ACE09023B"
+			client     	@15
+			supplier   	@20
+			vertices   	(list Points
+			    (1404, 579)
+			    (1793, 597))
+			line_style 	0)
+		    (object UseCaseView "Use Case View::Подготовить Персонажей" @23
+			location   	(1472, 1264)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@23
+			    location   	(1472, 1472)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	630
+			    justify    	0
+			    label      	"Подготовить Персонажей")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"642AC2470174"
+			width      	481
+			height     	257)
+		    (object DependencyView "" @24
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	(object SegLabel @25
+			    Parent_View 	@24
+			    location   	(1806, 1859)
 			    font       	(object Font
 				size       	10
 				face       	"Arial"
@@ -676,14 +961,13 @@
 			    orientation 	0)
 			line_color 	3342489
 			quidu      	"642AC75A0027"
-			client     	@2
-			supplier   	@1
+			client     	@1
+			supplier   	@23
 			vertices   	(list Points
-			    (2068, 1700)
-			    (1656, 1065))
+			    (2132, 2070)
+			    (1664, 1497))
 			line_style 	0)
-		    (object UseCaseView "Use Case View::Выбрать звучание голоса" @23
-			location   	(2560, 704)
+		    (object DependencyView "" @26
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -694,200 +978,9 @@
 			    strike     	FALSE
 			    color      	0
 			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@23
-			    location   	(2560, 877)
-			    anchor_loc 	1
-			    nlines     	2
-			    max_width  	630
-			    justify    	0
-			    label      	"Выбрать звучание голоса")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"642AC79000C3"
-			width      	350
-			height     	188)
-		    (object UseCaseView "Use Case View::Продумать возможные взаимодействия" @24
-			location   	(2400, 1168)
-			font       	(object Font
-			    size       	10
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@24
-			    location   	(2400, 1375)
-			    anchor_loc 	1
-			    nlines     	2
-			    max_width  	630
-			    justify    	0
-			    label      	"Продумать возможные взаимодействия")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"642AC7EC0344"
-			width      	382
-			height     	256)
-		    (object UseCaseView "Use Case View::Получение чего-либо" @25
-			location   	(3024, 896)
-			font       	(object Font
-			    size       	10
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@25
-			    location   	(3024, 1034)
-			    anchor_loc 	1
-			    nlines     	2
-			    max_width  	630
-			    justify    	0
-			    label      	"Получение чего-либо")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"642AC84C023B"
-			height     	118)
-		    (object UseCaseView "Use Case View::Зацепки для сюжета" @26
-			location   	(3040, 1120)
-			font       	(object Font
-			    size       	10
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
+			stereotype 	(object SegLabel @27
 			    Parent_View 	@26
-			    location   	(3040, 1258)
-			    anchor_loc 	1
-			    nlines     	2
-			    max_width  	630
-			    justify    	0
-			    label      	"Зацепки для сюжета")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"642AC8670372"
-			height     	118)
-		    (object UseCaseView "Use Case View::Получение задания" @27
-			location   	(3040, 1344)
-			font       	(object Font
-			    size       	10
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@27
-			    location   	(3040, 1482)
-			    anchor_loc 	1
-			    nlines     	2
-			    max_width  	630
-			    justify    	0
-			    label      	"Получение задания")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"642AC87701BE"
-			height     	118)
-		    (object InheritView "" @28
-			stereotype 	TRUE
-			line_color 	3342489
-			quidu      	"642AC8810366"
-			client     	@27
-			supplier   	@24
-			vertices   	(list Points
-			    (2930, 1311)
-			    (2584, 1214))
-			line_style 	0)
-		    (object InheritView "" @29
-			stereotype 	TRUE
-			line_color 	3342489
-			quidu      	"642AC885017F"
-			client     	@26
-			supplier   	@24
-			vertices   	(list Points
-			    (2930, 1124)
-			    (2584, 1151))
-			line_style 	0)
-		    (object InheritView "" @30
-			stereotype 	TRUE
-			line_color 	3342489
-			quidu      	"642AC8880266"
-			client     	@25
-			supplier   	@24
-			vertices   	(list Points
-			    (2828, 979)
-			    (2584, 1078))
-			line_style 	0)
-		    (object UseCaseView "Use Case View::Вражда" @31
-			location   	(3024, 1568)
-			font       	(object Font
-			    size       	10
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			label      	(object ItemLabel
-			    Parent_View 	@31
-			    location   	(3024, 1706)
-			    anchor_loc 	1
-			    nlines     	2
-			    max_width  	630
-			    justify    	0
-			    label      	"Вражда")
-			icon_style 	"Icon"
-			line_color 	3342489
-			fill_color 	13434879
-			quidu      	"642AC8CB0047"
-			height     	118)
-		    (object InheritView "" @32
-			stereotype 	TRUE
-			line_color 	3342489
-			quidu      	"642AC8D3036F"
-			client     	@31
-			supplier   	@24
-			vertices   	(list Points
-			    (2934, 1510)
-			    (2619, 1304))
-			line_style 	0)
-		    (object DependencyView "" @33
-			font       	(object Font
-			    size       	10
-			    face       	"Arial"
-			    charSet    	204
-			    bold       	FALSE
-			    italics    	FALSE
-			    underline  	FALSE
-			    strike     	FALSE
-			    color      	0
-			    default_color 	TRUE)
-			stereotype 	(object SegLabel @34
-			    Parent_View 	@33
-			    location   	(2050, 668)
+			    location   	(2060, 1275)
 			    font       	(object Font
 				size       	10
 				face       	"Arial"
@@ -909,13 +1002,13 @@
 			    orientation 	0)
 			line_color 	3342489
 			quidu      	"642AC930027F"
-			client     	@16
-			supplier   	@1
+			client     	@3
+			supplier   	@23
 			vertices   	(list Points
-			    (2270, 416)
-			    (1718, 708))
+			    (2375, 1098)
+			    (1703, 1217))
 			line_style 	0)
-		    (object DependencyView "" @35
+		    (object DependencyView "" @28
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -926,9 +1019,9 @@
 			    strike     	FALSE
 			    color      	0
 			    default_color 	TRUE)
-			stereotype 	(object SegLabel @36
-			    Parent_View 	@35
-			    location   	(2077, 878)
+			stereotype 	(object SegLabel @29
+			    Parent_View 	@28
+			    location   	(2032, 1444)
 			    font       	(object Font
 				size       	10
 				face       	"Arial"
@@ -950,13 +1043,13 @@
 			    orientation 	0)
 			line_color 	3342489
 			quidu      	"642AC93802C2"
-			client     	@23
-			supplier   	@1
+			client     	@4
+			supplier   	@23
 			vertices   	(list Points
-			    (2389, 719)
-			    (1735, 799))
+			    (2389, 1366)
+			    (1703, 1285))
 			line_style 	0)
-		    (object DependencyView "" @37
+		    (object DependencyView "" @30
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -967,9 +1060,9 @@
 			    strike     	FALSE
 			    color      	0
 			    default_color 	TRUE)
-			stereotype 	(object SegLabel @38
-			    Parent_View 	@37
-			    location   	(1933, 1115)
+			stereotype 	(object SegLabel @31
+			    Parent_View 	@30
+			    location   	(1853, 1600)
 			    font       	(object Font
 				size       	10
 				face       	"Arial"
@@ -991,14 +1084,14 @@
 			    orientation 	0)
 			line_color 	3342489
 			quidu      	"642AC940039E"
-			client     	@24
-			supplier   	@1
+			client     	@5
+			supplier   	@23
 			vertices   	(list Points
-			    (2213, 1092)
-			    (1735, 914))
+			    (2114, 1604)
+			    (1705, 1385))
 			line_style 	0)
-		    (object UseCaseView "Use Case View::Сделать карту" @39
-			location   	(1648, 2512)
+		    (object UseCaseView "Use Case View::Подготовить место действия" @32
+			location   	(1264, 2080)
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -1010,19 +1103,20 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@39
-			    location   	(1648, 2650)
+			    Parent_View 	@32
+			    location   	(1264, 2287)
 			    anchor_loc 	1
 			    nlines     	2
 			    max_width  	630
 			    justify    	0
-			    label      	"Сделать карту")
+			    label      	"Подготовить место действия")
 			icon_style 	"Icon"
 			line_color 	3342489
 			fill_color 	13434879
-			quidu      	"642AC9E201DD"
-			height     	118)
-		    (object DependencyView "" @40
+			quidu      	"642AC3990014"
+			width      	419
+			height     	256)
+		    (object DependencyView "" @33
 			font       	(object Font
 			    size       	10
 			    face       	"Arial"
@@ -1033,9 +1127,91 @@
 			    strike     	FALSE
 			    color      	0
 			    default_color 	TRUE)
-			stereotype 	(object SegLabel @41
-			    Parent_View 	@40
-			    location   	(1420, 2323)
+			stereotype 	(object SegLabel @34
+			    Parent_View 	@33
+			    location   	(1675, 2368)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    anchor     	10
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	450
+			    justify    	0
+			    label      	"<<extend>>"
+			    pctDist    	0.500000
+			    height     	120
+			    orientation 	0)
+			line_color 	3342489
+			quidu      	"642AC74600EF"
+			client     	@2
+			supplier   	@32
+			vertices   	(list Points
+			    (1968, 2354)
+			    (1466, 2157))
+			line_style 	0)
+		    (object DependencyView "" @35
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	(object SegLabel @36
+			    Parent_View 	@35
+			    location   	(1725, 2235)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    anchor     	10
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	450
+			    justify    	0
+			    label      	"<<extend>>"
+			    pctDist    	0.500000
+			    height     	120
+			    orientation 	0)
+			line_color 	3342489
+			quidu      	"642AC74F004F"
+			client     	@1
+			supplier   	@32
+			vertices   	(list Points
+			    (2003, 2139)
+			    (1466, 2090))
+			line_style 	0)
+		    (object DependencyView "" @37
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	(object SegLabel @38
+			    Parent_View 	@37
+			    location   	(1391, 2517)
 			    font       	(object Font
 				size       	10
 				face       	"Arial"
@@ -1057,12 +1233,745 @@
 			    orientation 	0)
 			line_color 	3342489
 			quidu      	"642AC9EC03D2"
-			client     	@39
-			supplier   	@4
+			client     	@14
+			supplier   	@32
 			vertices   	(list Points
-			    (1617, 2453)
-			    (1437, 2087))
-			line_style 	0)))))
+			    (1579, 2598)
+			    (1404, 2311))
+			line_style 	0)
+		    (object UseCaseView "Use Case View::Подобрать музыку" @39
+			location   	(848, 2608)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@39
+			    location   	(848, 2797)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	630
+			    justify    	0
+			    label      	"Подобрать музыку")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"642AC47702D2"
+			width      	350
+			height     	219)
+		    (object UseCaseView "Use Case View::Запрос советов" @40
+			location   	(576, 304)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@40
+			    location   	(576, 442)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	630
+			    justify    	0
+			    label      	"Запрос советов")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"642ACC6F0039"
+			height     	118)
+		    (object DependencyView "" @41
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	(object SegLabel @42
+			    Parent_View 	@41
+			    location   	(904, 173)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    anchor     	10
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	450
+			    justify    	0
+			    label      	"<<extend>>"
+			    pctDist    	0.526705
+			    height     	61
+			    orientation 	1)
+			line_color 	3342489
+			quidu      	"642ACDBA0323"
+			client     	@17
+			supplier   	@40
+			vertices   	(list Points
+			    (1170, 181)
+			    (684, 279))
+			line_style 	0)
+		    (object UseCaseView "Use Case View::Запрос на сохранение" @43
+			location   	(816, 848)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@43
+			    location   	(816, 986)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	630
+			    justify    	0
+			    label      	"Запрос на сохранение")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"642ACE600382"
+			height     	118)
+		    (object ClassView "Class" "Use Case View::Мастер" @44
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(320, 1008)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@44
+			    location   	(320, 1168)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	325
+			    justify    	0
+			    label      	"Мастер")
+			icon       	"Actor"
+			icon_style 	"Icon"
+			line_color 	3342489
+			quidu      	"642AC22C00A2"
+			compartment 	(object Compartment
+			    Parent_View 	@44
+			    location   	(139, 1209)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    anchor     	2
+			    nlines     	3
+			    max_width  	359
+			    justify    	0)
+			annotation 	8
+			autoResize 	TRUE)
+		    (object AssociationViewNew "$UNNAMED$0" @45
+			location   	(807, 1113)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"642AC2DE0116"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$1" @46
+				Parent_View 	@45
+				location   	(439, 537)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"642AC2DF0091"
+				client     	@45
+				supplier   	@23
+				vertices   	(list Points
+				    (807, 1113)
+				    (1238, 1208))
+				line_style 	0)
+			    (object RoleView "$UNNAMED$2" @47
+				Parent_View 	@45
+				location   	(439, 537)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"642AC2DF0093"
+				client     	@45
+				supplier   	@44
+				vertices   	(list Points
+				    (807, 1113)
+				    (377, 1018))
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$3" @48
+			location   	(822, 1578)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"642AC59D0338"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$4" @49
+				Parent_View 	@48
+				location   	(438, 970)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"642AC59E0348"
+				client     	@48
+				supplier   	@32
+				vertices   	(list Points
+				    (822, 1578)
+				    (1157, 1959))
+				line_style 	0)
+			    (object RoleView "$UNNAMED$5" @50
+				Parent_View 	@48
+				location   	(438, 970)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"642AC59E034A"
+				client     	@48
+				supplier   	@44
+				vertices   	(list Points
+				    (822, 1578)
+				    (488, 1198))
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$6" @51
+			location   	(613, 1904)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"642AC5A1010B"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$7" @52
+				Parent_View 	@51
+				location   	(229, 1296)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"642AC5A20093"
+				client     	@51
+				supplier   	@39
+				vertices   	(list Points
+				    (613, 1904)
+				    (809, 2501))
+				line_style 	0)
+			    (object RoleView "$UNNAMED$8" @53
+				Parent_View 	@51
+				location   	(229, 1296)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"642AC5A20095"
+				client     	@51
+				supplier   	@44
+				vertices   	(list Points
+				    (613, 1904)
+				    (417, 1308))
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$9" @54
+			location   	(430, 696)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"642ACC7F01A8"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$10" @55
+				Parent_View 	@54
+				location   	(110, -312)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"642ACC8002C2"
+				client     	@54
+				supplier   	@40
+				vertices   	(list Points
+				    (430, 696)
+				    (514, 467))
+				line_style 	0)
+			    (object RoleView "$UNNAMED$11" @56
+				Parent_View 	@54
+				location   	(110, -312)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"642ACC8002C6"
+				client     	@54
+				supplier   	@44
+				vertices   	(list Points
+				    (430, 696)
+				    (347, 926))
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$15" @57
+			location   	(492, 950)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"642ACE6B03BC"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$16" @58
+				Parent_View 	@57
+				location   	(172, -58)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"642ACE6C032A"
+				client     	@57
+				supplier   	@43
+				vertices   	(list Points
+				    (492, 950)
+				    (607, 914))
+				line_style 	0)
+			    (object RoleView "$UNNAMED$17" @59
+				Parent_View 	@57
+				location   	(172, -58)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"642ACE6C032D"
+				client     	@57
+				supplier   	@44
+				vertices   	(list Points
+				    (492, 950)
+				    (377, 987))
+				line_style 	0)))
+		    (object DependencyView "" @60
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	(object SegLabel @61
+			    Parent_View 	@60
+			    location   	(874, 712)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    anchor     	10
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	450
+			    justify    	0
+			    label      	"<<include>>"
+			    pctDist    	0.028478
+			    height     	87
+			    orientation 	0)
+			line_color 	3342489
+			quidu      	"642ACEA300B5"
+			client     	@43
+			supplier   	@15
+			vertices   	(list Points
+			    (911, 790)
+			    (1109, 679))
+			line_style 	0)
+		    (object DependencyView "" @62
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	(object SegLabel @63
+			    Parent_View 	@62
+			    location   	(896, 500)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    anchor     	10
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	450
+			    justify    	0
+			    label      	"<<extend>>"
+			    pctDist    	0.529965
+			    height     	73
+			    orientation 	0)
+			line_color 	3342489
+			quidu      	"642ACEBD00EE"
+			client     	@15
+			supplier   	@40
+			vertices   	(list Points
+			    (1186, 533)
+			    (684, 342))
+			line_style 	0)
+		    (object UseCaseView "Use Case View::Генерация советов" @64
+			location   	(2592, 160)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@64
+			    location   	(2592, 317)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	630
+			    justify    	0
+			    label      	"Генерация советов")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"642ACCC60276"
+			width      	312
+			height     	156)
+		    (object DependencyView "" @65
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	(object SegLabel @66
+			    Parent_View 	@65
+			    location   	(2246, 89)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    anchor     	10
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	450
+			    justify    	0
+			    label      	"<<include>>"
+			    pctDist    	0.508654
+			    height     	59
+			    orientation 	1)
+			line_color 	3342489
+			quidu      	"642ACD1F0382"
+			client     	@64
+			supplier   	@16
+			vertices   	(list Points
+			    (2436, 152)
+			    (2060, 144))
+			line_style 	0)
+		    (object DependencyView "" @67
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	(object SegLabel @68
+			    Parent_View 	@67
+			    location   	(2047, 443)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    anchor     	10
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	450
+			    justify    	0
+			    label      	"<<extend>>"
+			    pctDist    	0.210179
+			    height     	58
+			    orientation 	0)
+			line_color 	3342489
+			quidu      	"642ACE36007C"
+			client     	@20
+			supplier   	@64
+			vertices   	(list Points
+			    (1987, 549)
+			    (2417, 272))
+			line_style 	0)
+		    (object UseCaseView "Use Case View::Сохранение наработок" @69
+			location   	(2496, 672)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@69
+			    location   	(2496, 810)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	630
+			    justify    	0
+			    label      	"Сохранение наработок")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"642ACF0502C6"
+			height     	118)
+		    (object DependencyView "" @70
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	(object SegLabel @71
+			    Parent_View 	@70
+			    location   	(2279, 591)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    anchor     	10
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	450
+			    justify    	0
+			    label      	"<<extend>>"
+			    pctDist    	0.702200
+			    height     	54
+			    orientation 	0)
+			line_color 	3342489
+			quidu      	"642ACF16022B"
+			client     	@20
+			supplier   	@69
+			vertices   	(list Points
+			    (2012, 617)
+			    (2386, 655))
+			line_style 	0)
+		    (object ClassView "Class" "Use Case View::Система" @72
+			ShowCompartmentStereotypes 	TRUE
+			SuppressAttribute 	TRUE
+			SuppressOperation 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(3216, 256)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@72
+			    location   	(3215, 464)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	568
+			    justify    	0
+			    label      	"Система")
+			icon       	"Business Actor"
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"642ACC3E00FC"
+			width      	202
+			annotation 	8
+			autoResize 	TRUE)
+		    (object AssociationViewNew "$UNNAMED$12" @73
+			location   	(2928, 209)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"642ACCCF039D"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$13" @74
+				Parent_View 	@73
+				location   	(912, -47)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"642ACCD0028A"
+				client     	@73
+				supplier   	@64
+				vertices   	(list Points
+				    (2928, 209)
+				    (2743, 180))
+				line_style 	0)
+			    (object RoleView "$UNNAMED$14" @75
+				Parent_View 	@73
+				location   	(912, -47)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"642ACCD0028D"
+				client     	@73
+				supplier   	@72
+				vertices   	(list Points
+				    (2928, 209)
+				    (3114, 238))
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$18" @76
+			location   	(2853, 461)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"642ACF300190"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$19" @77
+				Parent_View 	@76
+				location   	(-363, 205)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"642ACF31015D"
+				client     	@76
+				supplier   	@69
+				vertices   	(list Points
+				    (2853, 461)
+				    (2591, 613))
+				line_style 	0)
+			    (object RoleView "$UNNAMED$20" @78
+				Parent_View 	@76
+				location   	(-363, 205)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"642ACF310163"
+				client     	@76
+				supplier   	@72
+				vertices   	(list Points
+				    (2853, 461)
+				    (3116, 309))
+				line_style 	0)))))))
     root_category 	(object Class_Category "Logical View"
 	quid       	"39C9260C00D5"
 	exportControl 	"Public"
@@ -1070,6 +1979,245 @@
 	subsystem  	"Component View"
 	quidu      	"39C9260C00D7"
 	logical_models 	(list unit_reference_list
+	    (object Class "Контекст"
+		quid       	"6433F20F00A0"
+		operations 	(list Operations
+		    (object Operation "создатьКонтекст"
+			quid       	"643BFDB301EF"
+			result     	"Контекст"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0
+			quidu      	"6433F20F00A0")
+		    (object Operation "получитьОбъекты"
+			quid       	"643BFFE401FC"
+			result     	"List<ЧастьСессии>"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "добавитьОбъекты"
+			quid       	"643C00B60112"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "удалитьОбъекты"
+			quid       	"643C00C002D4"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0))
+		class_attributes 	(list class_attribute_list
+		    (object ClassAttribute "объектыРаботы"
+			quid       	"6433F37A0357"
+			documentation 	"Поле которое показывает с каким типом сущности требуется работать системе в соответствии с данным контекстом"
+			type       	"List<ЧастьСессии>")))
+	    (object Class "ЧастьСессии"
+		quid       	"6433F4B80368"
+		stereotype 	"Interface"
+		used_nodes 	(list uses_relationship_list
+		    (object Uses_Relationship
+			quid       	"6433FB6002C1"
+			supplier   	"Logical View::Контекст"
+			quidu      	"6433F20F00A0")))
+	    (object Class "Персонаж"
+		quid       	"6433F5040074"
+		superclasses 	(list inheritance_relationship_list
+		    (object Inheritance_Relationship
+			quid       	"6433FA2901D6"
+			supplier   	"Logical View::ЧастьСессии"
+			quidu      	"6433F4B80368"))
+		operations 	(list Operations
+		    (object Operation "получитьВажность"
+			quid       	"643C022001ED"
+			result     	"Integer"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0
+			quidu      	"39CD6BC50328")
+		    (object Operation "установитьВажность"
+			quid       	"643C0236002D"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "получитьОписание"
+			quid       	"643C023F01E5"
+			result     	"map"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "установитьОписание"
+			quid       	"643C02660248"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "получитьХарактеристики"
+			quid       	"643C026F0351"
+			result     	"map"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "установитьХарактеристики"
+			quid       	"643C02870169"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "создатьПерсонажа"
+			quid       	"643C050F0291"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0))
+		class_attributes 	(list class_attribute_list
+		    (object ClassAttribute "важность"
+			quid       	"643400140230"
+			documentation 	"Определяет важность персонажа в сюжете. От этого должна зависеть степень проработки, а также степень свободы системы при создании совета."
+			type       	"integer")
+		    (object ClassAttribute "описание"
+			quid       	"643400720165"
+			type       	"map")
+		    (object ClassAttribute "характеристики"
+			quid       	"643400EE0034"
+			type       	"map")))
+	    (object Class "МестоДействия"
+		quid       	"6433F50E0242"
+		superclasses 	(list inheritance_relationship_list
+		    (object Inheritance_Relationship
+			quid       	"6433FA2C004E"
+			supplier   	"Logical View::ЧастьСессии"
+			quidu      	"6433F4B80368"))
+		operations 	(list Operations
+		    (object Operation "получитьМестность"
+			quid       	"643C083B0218"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "выбратьМестность"
+			quid       	"643C08430398"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "получитьВзаимодействия"
+			quid       	"643C084B02D7"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "настроитьВзаимодействия"
+			quid       	"643C08550180"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "создатьМестоДействия"
+			quid       	"643C08830080"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0))
+		class_attributes 	(list class_attribute_list
+		    (object ClassAttribute "местность"
+			quid       	"643402C1036E"
+			type       	"Местность"
+			quidu      	"643402F701C2")
+		    (object ClassAttribute "взаимодействия"
+			quid       	"6434043002C3"
+			type       	"map")))
+	    (object Class "Музыка"
+		quid       	"6433F54500BE"
+		superclasses 	(list inheritance_relationship_list
+		    (object Inheritance_Relationship
+			quid       	"6433FA2E01C6"
+			supplier   	"Logical View::ЧастьСессии"
+			quidu      	"6433F4B80368"))
+		operations 	(list Operations
+		    (object Operation "получитьНастроение"
+			quid       	"643C08910320"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "получитьТемп"
+			quid       	"643C089802C9"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "получитьМузыкуИзБазыДанных"
+			quid       	"643C089E0378"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0))
+		class_attributes 	(list class_attribute_list
+		    (object ClassAttribute "настроение"
+			quid       	"643401640387"
+			type       	"string")
+		    (object ClassAttribute "темп"
+			quid       	"643401760180"
+			documentation 	
+|Меньше - более спокойная музыка, используемая для спокойных сцен.
+|Больше - более активная ммелодия, чаще используемая для боевых сцен.
+			
+			type       	"integer")))
+	    (object Class "Совет"
+		quid       	"6433FC7C0333"
+		operations 	(list Operations
+		    (object Operation "получитьОписание"
+			quid       	"643C0B4D02AB"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "установитьОписание"
+			quid       	"643C0B54000D"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "получитьОбъекты"
+			quid       	"643C0B5B03E5"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "добавитьОбъекты"
+			quid       	"643C0B9C0160"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "удалитьОбъекты"
+			quid       	"643C0BA202F2"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0))
+		class_attributes 	(list class_attribute_list
+		    (object ClassAttribute "описание"
+			quid       	"643403DE0133"
+			type       	"string")
+		    (object ClassAttribute "объектыРаботы"
+			quid       	"643403EB009A"
+			documentation 	"те объекты сессии, которые предлагается использовать"
+			type       	"List<ЧастьСессии>")))
+	    (object Class "Местность"
+		quid       	"643402F701C2"
+		class_attributes 	(list class_attribute_list
+		    (object ClassAttribute "типМестности"
+			quid       	"6434030600A2"
+			type       	"enum"
+			exportControl 	"Public")))
+	    (object Association "запрашивает советы"
+		quid       	"6433FCB100BF"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$21"
+			quid       	"6433FCB103DA"
+			supplier   	"Use Case View::Система"
+			quidu      	"642ACC3E00FC"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$22"
+			quid       	"6433FCB103E4"
+			supplier   	"Use Case View::Мастер"
+			quidu      	"642AC22C00A2")))
+	    (object Association "$UNNAMED$23"
+		quid       	"64340328011D"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$24"
+			quid       	"6434032802FA"
+			supplier   	"Logical View::МестоДействия"
+			quidu      	"6433F50E0242"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$25"
+			quid       	"6434032802FC"
+			supplier   	"Logical View::Местность"
+			quidu      	"643402F701C2")))
 	    (object Class_Category "javax"
 		is_unit    	TRUE
 		is_loaded  	FALSE
@@ -1084,8 +2232,633 @@
 		is_unit    	TRUE
 		is_loaded  	FALSE
 		file_name  	"$FRAMEWORK_PATH\\Shared Components\\j2se_1_3_org.cat"
-		quid       	"39C92693036F"))
+		quid       	"39C92693036F")
+	    (object Class_Category "Это напоминалка, ее стереть. Нужно больше полей и методов, в остальном хорошо. Сделать методы типа создания вещей... Также сделать геттеры и сеттеры."
+		quid       	"64340617014B"
+		exportControl 	"Public"
+		logical_models 	(list unit_reference_list)
+		logical_presentations 	(list unit_reference_list
+		    (object ClassDiagram "Main"
+			quid       	"643C096D038D"
+			title      	"Main"
+			zoom       	100
+			max_height 	28350
+			max_width  	21600
+			origin_x   	0
+			origin_y   	0
+			items      	(list diagram_item_list)))))
 	logical_presentations 	(list unit_reference_list
+	    (object ClassDiagram "ClassDiagram"
+		quid       	"6433DD290234"
+		title      	"ClassDiagram"
+		zoom       	100
+		max_height 	28350
+		max_width  	21600
+		origin_x   	25
+		origin_y   	53
+		items      	(list diagram_item_list
+		    (object ClassView "Class" "Logical View::Контекст" @79
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(992, 528)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@79
+			    location   	(631, 347)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	722
+			    justify    	0
+			    label      	"Контекст")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"6433F20F00A0"
+			compartment 	(object Compartment
+			    Parent_View 	@79
+			    location   	(631, 408)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	6
+			    max_width  	720
+			    justify    	1)
+			width      	740
+			height     	386
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::ЧастьСессии" @80
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(1936, 720)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@80
+			    location   	(1934, 893)
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	248
+			    justify    	0
+			    label      	"ЧастьСессии")
+			icon       	"Interface"
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"6433F4B80368"
+			width      	187
+			height     	187
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::Персонаж" @81
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(2512, 416)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@81
+			    location   	(2237, 110)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	550
+			    justify    	0
+			    label      	"Персонаж")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"6433F5040074"
+			compartment 	(object Compartment
+			    Parent_View 	@81
+			    location   	(2237, 171)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	11
+			    max_width  	547
+			    justify    	1)
+			width      	568
+			height     	636
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::Музыка" @82
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(2752, 1408)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@82
+			    location   	(2423, 1227)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	658
+			    justify    	0
+			    label      	"Музыка")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"6433F54500BE"
+			compartment 	(object Compartment
+			    Parent_View 	@82
+			    location   	(2423, 1288)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	6
+			    max_width  	656
+			    justify    	1)
+			width      	676
+			height     	386
+			annotation 	8
+			autoResize 	TRUE)
+		    (object InheritView "" @83
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"6433FA2901D6"
+			client     	@81
+			supplier   	@80
+			vertices   	(list Points
+			    (2227, 565)
+			    (2013, 666))
+			line_style 	0)
+		    (object InheritView "" @84
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"6433FA2E01C6"
+			client     	@82
+			supplier   	@80
+			vertices   	(list Points
+			    (2522, 1214)
+			    (2058, 821))
+			line_style 	0)
+		    (object ClassView "Class" "Logical View::Совет" @85
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(2512, 1920)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@85
+			    location   	(2151, 1689)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	722
+			    justify    	0
+			    label      	"Совет")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"6433FC7C0333"
+			compartment 	(object Compartment
+			    Parent_View 	@85
+			    location   	(2151, 1750)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	8
+			    max_width  	720
+			    justify    	1)
+			width      	740
+			height     	486
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Use Case View::Мастер" @86
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(400, 1088)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@86
+			    location   	(400, 1248)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	325
+			    justify    	0
+			    label      	"Мастер")
+			icon       	"Actor"
+			icon_style 	"Icon"
+			line_color 	3342489
+			quidu      	"642AC22C00A2"
+			compartment 	(object Compartment
+			    Parent_View 	@86
+			    location   	(200, 1333)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    anchor     	2
+			    nlines     	3
+			    max_width  	397
+			    justify    	0)
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Use Case View::Система" @87
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(1504, 1296)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@87
+			    location   	(1503, 1504)
+			    anchor_loc 	1
+			    nlines     	2
+			    max_width  	570
+			    justify    	0
+			    label      	"Система")
+			icon       	"Business Actor"
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"642ACC3E00FC"
+			compartment 	(object Compartment
+			    Parent_View 	@87
+			    location   	(1324, 1589)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    anchor     	2
+			    nlines     	3
+			    max_width  	356
+			    justify    	0)
+			width      	202
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::МестоДействия" @88
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(3168, 928)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@88
+			    location   	(2890, 697)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	556
+			    justify    	0
+			    label      	"МестоДействия")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"6433F50E0242"
+			compartment 	(object Compartment
+			    Parent_View 	@88
+			    location   	(2890, 758)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	8
+			    max_width  	553
+			    justify    	1)
+			width      	574
+			height     	486
+			annotation 	8
+			autoResize 	TRUE)
+		    (object InheritView "" @89
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"6433FA2C004E"
+			client     	@88
+			supplier   	@80
+			vertices   	(list Points
+			    (2880, 879)
+			    (2013, 725))
+			line_style 	0)
+		    (object ClassView "Class" "Logical View::Местность" @90
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(3776, 880)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object ItemLabel
+			    Parent_View 	@90
+			    location   	(3559, 799)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	434
+			    justify    	0
+			    label      	"Местность")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"643402F701C2"
+			compartment 	(object Compartment
+			    Parent_View 	@90
+			    location   	(3559, 860)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	FALSE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	2
+			    max_width  	453
+			    justify    	1)
+			width      	452
+			height     	186
+			annotation 	8
+			autoResize 	TRUE)
+		    (object AssociationViewNew "$UNNAMED$23" @91
+			location   	(3502, 900)
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"64340328011D"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$24" @92
+				Parent_View 	@91
+				location   	(-82, 340)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"6434032802FA"
+				client     	@91
+				supplier   	@88
+				vertices   	(list Points
+				    (3502, 900)
+				    (3455, 904))
+				line_style 	0)
+			    (object RoleView "$UNNAMED$25" @93
+				Parent_View 	@91
+				location   	(-82, 340)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"6434032802FC"
+				client     	@91
+				supplier   	@90
+				vertices   	(list Points
+				    (3502, 900)
+				    (3549, 897))
+				line_style 	0)))
+		    (object UsesView "" @94
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"6433FB6002C1"
+			client     	@80
+			supplier   	@79
+			vertices   	(list Points
+			    (1851, 694)
+			    (1362, 603))
+			line_style 	0)
+		    (object UsesView "" @95
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"6433FF190148"
+			client     	@87
+			supplier   	@85
+			vertices   	(list Points
+			    (1602, 1355)
+			    (2141, 1690))
+			line_style 	0)
+		    (object UsesView "может использовать" @96
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object SegLabel @97
+			    Parent_View 	@96
+			    location   	(1904, 1141)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	TRUE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    anchor     	1
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	488
+			    justify    	0
+			    label      	"может использовать"
+			    pctDist    	0.599286
+			    height     	227
+			    orientation 	1)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"6434034B02F2"
+			client     	@87
+			supplier   	@80
+			vertices   	(list Points
+			    (1597, 1166)
+			    (1808, 893))
+			line_style 	0)
+		    (object UsesView "отправляет системе" @98
+			font       	(object Font
+			    size       	10
+			    face       	"Arial"
+			    charSet    	204
+			    bold       	FALSE
+			    italics    	FALSE
+			    underline  	FALSE
+			    strike     	FALSE
+			    color      	0
+			    default_color 	TRUE)
+			label      	(object SegLabel @99
+			    Parent_View 	@98
+			    location   	(854, 936)
+			    font       	(object Font
+				size       	10
+				face       	"Arial"
+				charSet    	204
+				bold       	FALSE
+				italics    	TRUE
+				underline  	FALSE
+				strike     	FALSE
+				color      	0
+				default_color 	TRUE)
+			    anchor     	1
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	442
+			    justify    	0
+			    label      	"отправляет системе"
+			    pctDist    	0.784525
+			    height     	203
+			    orientation 	1)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"6433FF2A00C0"
+			client     	@86
+			supplier   	@79
+			vertices   	(list Points
+			    (457, 1031)
+			    (786, 721))
+			line_style 	0)))
 	    (object ClassDiagram "Package Hierarchy"
 		quid       	"39C9261001B8"
 		title      	"Package Hierarchy"
@@ -1095,7 +2868,7 @@
 		origin_x   	0
 		origin_y   	0
 		items      	(list diagram_item_list
-		    (object CategoryView "Logical View::java" @42
+		    (object CategoryView "Logical View::java" @100
 			location   	(208, 272)
 			font       	(object Font
 			    size       	10
@@ -1108,7 +2881,7 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@42
+			    Parent_View 	@100
 			    location   	(64, 188)
 			    nlines     	2
 			    max_width  	288
@@ -1120,7 +2893,7 @@
 			quidu      	"39C92661003B"
 			width      	300
 			height     	180)
-		    (object CategoryView "Logical View::javax" @43
+		    (object CategoryView "Logical View::javax" @101
 			location   	(656, 272)
 			font       	(object Font
 			    size       	10
@@ -1133,7 +2906,7 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@43
+			    Parent_View 	@101
 			    location   	(512, 188)
 			    nlines     	2
 			    max_width  	288
@@ -1145,7 +2918,7 @@
 			quidu      	"39C926610018"
 			width      	300
 			height     	180)
-		    (object CategoryView "Logical View::org" @44
+		    (object CategoryView "Logical View::org" @102
 			location   	(1104, 272)
 			font       	(object Font
 			    size       	10
@@ -1158,7 +2931,7 @@
 			    color      	0
 			    default_color 	TRUE)
 			label      	(object ItemLabel
-			    Parent_View 	@44
+			    Parent_View 	@102
 			    location   	(960, 188)
 			    nlines     	2
 			    max_width  	288
@@ -1179,7 +2952,7 @@
 		origin_x   	0
 		origin_y   	0
 		items      	(list diagram_item_list
-		    (object NoteView @45
+		    (object NoteView @103
 			location   	(224, 624)
 			font       	(object Font
 			    size       	10
@@ -1195,7 +2968,7 @@
 			fill_color 	12632256
 			width      	300
 			height     	132)
-		    (object NoteView @46
+		    (object NoteView @104
 			location   	(704, 624)
 			font       	(object Font
 			    size       	10
@@ -1211,7 +2984,7 @@
 			fill_color 	8421631
 			width      	300
 			height     	132)
-		    (object NoteView @47
+		    (object NoteView @105
 			location   	(1200, 624)
 			font       	(object Font
 			    size       	10
@@ -1227,7 +3000,7 @@
 			fill_color 	12615680
 			width      	300
 			height     	132)
-		    (object NoteView @48
+		    (object NoteView @106
 			location   	(1664, 624)
 			font       	(object Font
 			    size       	10
@@ -1243,7 +3016,7 @@
 			fill_color 	16777215
 			width      	300
 			height     	132)
-		    (object Label @49
+		    (object Label @107
 			location   	(81, 369)
 			font       	(object Font
 			    size       	12
@@ -1259,7 +3032,7 @@
 			max_width  	1163
 			justify    	1
 			label      	"J2EE: Java 2 Platform, Enterprise Edition - v 1.2.1")
-		    (object Label @50
+		    (object Label @108
 			location   	(96, 608)
 			font       	(object Font
 			    size       	10
@@ -1275,7 +3048,7 @@
 			max_width  	268
 			justify    	1
 			label      	"Abstract Class")
-		    (object Label @51
+		    (object Label @109
 			location   	(592, 608)
 			font       	(object Font
 			    size       	10
@@ -1291,7 +3064,7 @@
 			max_width  	225
 			justify    	1
 			label      	"Final Class")
-		    (object Label @52
+		    (object Label @110
 			location   	(1104, 608)
 			font       	(object Font
 			    size       	10
@@ -1307,7 +3080,7 @@
 			max_width  	206
 			justify    	1
 			label      	"Interface")
-		    (object Label @53
+		    (object Label @111
 			location   	(1552, 608)
 			font       	(object Font
 			    size       	10
